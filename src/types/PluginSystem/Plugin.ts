@@ -1,5 +1,5 @@
-import { checker } from "addons"
-import { Message, RestartProps } from "types"
+import { checker } from "../../addons"
+import { Message } from "../../types"
 
 export type PluginJson = {
   // Уникальный идентификатор плагина. Используется для различия плагинов.
