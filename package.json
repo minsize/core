@@ -1,6 +1,6 @@
 {
   "name": "@minsize/core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Core Module: The foundation for managing your application's modules and functionality.",
   "license": "MIT",
   "types": "index.ts",
