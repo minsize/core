@@ -1,0 +1,12 @@
+{
+  "uid": "randomId or custom name",
+  "name": "Test",
+  "description": "Testing",
+  "version": "1.0.0",
+  "authors": [
+    "xuserz"
+  ],
+  "compatibleVersions": {
+    "min": "1.0.0"
+  }
+}

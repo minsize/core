@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@minsize/utils": "^0.0.17"
+  }
+}
