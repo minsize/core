@@ -14,10 +14,6 @@ permissions:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package:
-          - utils
 
     steps:
       # Checkout the repository
@@ -33,7 +29,6 @@ jobs:
 
       # Configure npm for GitHub Packages
       - name: Configure npm for GitHub Packages
-        working-directory: ${{ matrix.package }}
         run: |
           echo "@minsize:registry=https://npm.pkg.github.com/" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_TOKEN }}" >> .npmrc
@@ -41,17 +36,15 @@ jobs:
 
       # Install dependencies
       - name: Install Dependencies
-        working-directory: ${{ matrix.package }}
         run: yarn
 
       # Build package
       - name: Build
-        working-directory: ${{ matrix.package }}
         run: yarn build
 
       # Publish to npm
       - name: Publish to npm
-        working-directory: ${{ matrix.package }}/dist
+        working-directory: /dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: npm publish --provenance --access public
