@@ -45,22 +45,31 @@ jobs:
           if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; 
           then
             echo "Version changed"
-            echo "version_changed=true" >> $GITHUB_OUTPUT # Если версия изменилась
-            echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            echo "version_changed=true" >> $GITHUB_OUTPUT # Если версия изменилась, устанавливаем флаг
+            echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT # Записываем новую версию в выходные данные
           else
             echo "Version not changed"
-            echo "version_changed=false" >> $GITHUB_OUTPUT # Если версия не изменилась
+            echo "version_changed=false" >> $GITHUB_OUTPUT # Если версия не изменилась, соответствующий флаг
           fi
 
       # Сборка пакета выполняется только если версия изменилась
       - name: Build
         run: yarn build
-        if: steps.check.outputs.version_changed == 'true'
+        if: steps.check.outputs.version_changed == 'true' # Условие на проверку изменения версии
 
       # Публикация пакета в npm, если версия обновлена
       - name: Publish to npm
-        if: steps.check.outputs.version_changed == 'true'
+        if: steps.check.outputs.version_changed == 'true' # Условие на проверку изменения версии
         working-directory: dist
         run: npm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Используем токен для аутентификации
+
+      # Добавление тега релиза, если версия изменилась
+      - name: Tag release
+        if: steps.check.outputs.version_changed == 'true' # Условие на проверку изменения версии
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com" # Устанавливаем email для коммита
+          git config --local user.name "github-actions[bot]" # Устанавливаем имя пользователя для коммита
+          git tag -a "v${{ steps.check.outputs.new_version }}" -m "v${{ steps.check.outputs.new_version }}" # Создаем новый тег
+          git push origin "v${{ steps.check.outputs.new_version }}" # Пушим тег в удаленный репозиторий
