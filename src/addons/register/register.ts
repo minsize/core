@@ -2,11 +2,10 @@
 import { parseVersionString } from "@minsize/utils" // Для разбора строковых версий
 import { version } from "../../../package.json" // Текущая версия приложения из `package.json`
 
-import { onMessage } from "./events" // Функция для регистрации и обработки сообщений
-
 // Импорты для управления состоянием и типизации
 import store from "../../store" // Хранилище для управления состоянием приложения
 import type { Plugin } from "../../types" // Тип данных `Plugin`
+import { log } from "../../plugin"
 
 /**
  * Регистрация плагина
@@ -26,7 +25,7 @@ export function register(plugins: Plugin[]) {
     // Проверка необходимых полей перед инициализацией плагина
     if (!plugin.uid || !plugin.version || !plugin.name || !plugin.init) {
       // Отправляем критическое сообщение о некорректном конфиге плагина
-      onMessage(
+      log.send(
         {
           type: "critical",
           details: "config (plugin.json) has errors and cannot be run",
@@ -90,7 +89,7 @@ export function register(plugins: Plugin[]) {
 
     // Выводим предупреждение, если версия плагина несовместима с ядром
     if (errorVersion) {
-      onMessage(
+      log.send(
         {
           type: "warning",
           details: "the plugin version cannot work with the core version",
@@ -105,7 +104,7 @@ export function register(plugins: Plugin[]) {
       plugin.init()
     } catch (error) {
       // Отправляем критическое сообщение, если произошла ошибка при инициализации
-      onMessage(
+      log.send(
         {
           type: "critical",
           details: {
@@ -117,7 +116,7 @@ export function register(plugins: Plugin[]) {
       )
     } finally {
       // Отправляем отладочное сообщение об успешной инициализации
-      onMessage(
+      log.send(
         {
           type: "debug",
           details: "plugin initialization successful",

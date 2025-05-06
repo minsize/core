@@ -1,1 +1,0 @@
-export { onMessage } from './onMessage'

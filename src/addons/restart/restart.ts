@@ -1,4 +1,4 @@
-import { onMessage } from "../../addons/register/events" // Импортируем функцию для отправки сообщений о событиях
+import { log } from "../../plugin"
 import store from "../../store" // Импортируем общий store для доступа к данным плагинов
 import { RestartProps } from "../../types" // Импортируем типы для параметров перезапуска
 
@@ -27,7 +27,7 @@ export async function restart(
       const status = await plugin.restart()
       if (status === false) {
         // Выводим предупреждение, если плагин не смог перезапуститься
-        onMessage(
+        log.send(
           {
             type: "warning",
             details: {
@@ -43,7 +43,7 @@ export async function restart(
     } catch (error) {
       report[plugin.uid] = false
       // Отправляем критическое сообщение, если произошла ошибка при перезапуске
-      onMessage(
+      log.send(
         {
           type: "critical",
           details: {
@@ -59,7 +59,7 @@ export async function restart(
       }
 
       // Отправляем отладочное сообщение об успешном перезапуске
-      onMessage(
+      log.send(
         {
           type: "debug",
           details: {

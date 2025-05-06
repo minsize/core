@@ -1,9 +1,9 @@
-import type { PluginJson, Message } from "../../../types"
+import type { PluginJson, Message } from "../../types"
 
 // Функция, которая обрабатывает сообщения определённого типа
 // `this` — это объект типа `PluginJson`
 // `options` — это объект типа `Message`
-export function onMessage(options: Message, plugin: PluginJson) {
+function send(options: Message, plugin: PluginJson) {
   // Изначально используем консольный лог для вывода
   var log = console.log
 
@@ -37,3 +37,5 @@ export function onMessage(options: Message, plugin: PluginJson) {
     )}\n-------------`,
   )
 }
+
+export default send
