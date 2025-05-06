@@ -1,8 +1,8 @@
 # Table of contents
 
 * [Модуль Ядра](README.md)
-* [Плагины](docs/plugins/README.md)
-  * [Управление ядром плагинов](docs/plugins/plugin.md)
-  * [API](docs/plugins/api.md)
-    * [Checker](docs/plugins/api/checker.md)
-      * [Verify](docs/plugins/api/checker/verify.md)
+* [Плагины](plugins/README.md)
+  * [Управление ядром плагинов](plugins/plugin.md)
+  * [API](plugins/api.md)
+    * [Checker](plugins/api/README.md)
+      * [Verify](plugins/api/checker/verify.md)
