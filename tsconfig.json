@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "jsx": "preserve",
     "target": "esnext",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "baseUrl": "./src",
+    "module": "esnext",
+    "strict": true,
+    // "baseUrl": "./src",
+    "allowJs": true,
     "sourceMap": false,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -16,13 +16,20 @@
     "noUnusedLocals": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "declaration": false,
+    "jsxImportSource": "solid-js",
+    "allowUnreachableCode": true,
+    "declarationMap": false,
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "baseUrl": "./src",
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["./src/**/*.ts"]
+  "types": ["*.d.ts"],
+  "exclude": ["node_modules", "src/**/*.test.ts", "index.ts", "dist/**/*"]
 }

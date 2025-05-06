@@ -1,13 +1,13 @@
 // Импорты утилит и функций для работы с версиями
 import { parseVersionString } from "@minsize/utils" // Для разбора строковых версий
-import { version } from "../../package.json" // Текущая версия приложения из `package.json`
+import { version } from "../../../package.json" // Текущая версия приложения из `package.json`
 
 // Импорты для управления состоянием и типизации
 import store from "../../store" // Хранилище для управления состоянием приложения
 import type { Plugin } from "../../types" // Тип данных `Plugin`
 
 // Импорты функций для верификации и обработки событий
-import checker from "../checker/checker" // Функция для верификации
+import { checker } from "../checker/checker" // Функция для верификации
 import { onMessage } from "./events" // Функция для регистрации и обработки сообщений
 
 /**
