@@ -31,6 +31,9 @@ jobs:
       - name: Install Dependencies
         run: yarn
 
+      - name: Fetch all tags
+        run: git fetch --tags
+
       # Проверяем, изменилась ли версия пакета
       - name: Check the version
         id: check
