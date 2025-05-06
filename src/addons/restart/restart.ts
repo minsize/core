@@ -1,22 +1,66 @@
+import { onMessage } from "../../addons/register/events" // Импортируем функцию для отправки сообщений о событиях
 import store from "../../store" // Импортируем общий store для доступа к данным плагинов
-import { RestartProps } from "../../types" // Импортируем тип для параметров перезапуска
+import { RestartProps } from "../../types" // Импортируем типы для параметров перезапуска
 
 /**
  * Перезапускает указанные плагины на основе переданных параметров
  *
  * @param props - Опции для рестарта, определяющие, какие плагины перезапустить
+ * @returns объект с результатами перезапуска, где ключ - uid плагина, а значение - успех или неудача
  */
-export function restart(props?: RestartProps) {
-  // Определяем, нужно ли перезапустить все плагины
+export async function restart(
+  props?: RestartProps,
+): Promise<Record<string, boolean>> {
+  // Проверяем, нужно ли перезапустить все плагины или только указанные
   const isAll = !props || props.all || !props.uids
 
-  // Фильтруем плагины, которые подлежат перезапуску
+  // Получаем список плагинов, которые необходимо перезапустить
   const pluginsToRestart = store.plugins.filter((plugin) =>
-    (isAll ? [plugin.uid] : props.uids)?.includes(plugin.uid),
+    isAll ? true : props.uids?.includes(plugin.uid) ?? false,
   )
+
+  const report: Record<string, boolean> = {}
 
   // Перезапускаем каждый из отфильтрованных плагинов
   for (const plugin of pluginsToRestart) {
-    plugin.restart()
+    try {
+      const status = await plugin.restart()
+      if (status === false) {
+        // Выводим предупреждение, если плагин не смог перезапуститься
+        onMessage.call(plugin, {
+          type: "warning",
+          details: {
+            message: "reported that it was not possible to restart",
+          },
+        })
+      }
+      if (typeof status === "boolean") {
+        report[plugin.uid] = status
+      }
+    } catch (error) {
+      report[plugin.uid] = false
+      // Отправляем критическое сообщение, если произошла ошибка при перезапуске
+      onMessage.call(plugin, {
+        type: "critical",
+        details: {
+          message: "error on restart",
+          error,
+        },
+      })
+    } finally {
+      if (report[plugin.uid] === undefined) {
+        report[plugin.uid] = true
+      }
+
+      // Отправляем отладочное сообщение об успешном перезапуске
+      onMessage.call(plugin, {
+        type: "debug",
+        details: {
+          message: "successfully restarted",
+        },
+      })
+    }
   }
+
+  return report
 }

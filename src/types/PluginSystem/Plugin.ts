@@ -37,7 +37,7 @@ export type PluginJson = {
 export interface Plugin extends PluginJson {
   // Метод инициализации плагина, вызываемый при его загрузке.
   init(props: PluginProps): void
-  restart(): void
+  restart(): Promise<boolean | void> | boolean | void
 }
 
 export type PluginProps = {
