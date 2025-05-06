@@ -1,7 +1,8 @@
-import { register } from "./addons"
+import { register, restart } from "./addons"
 
 const mcore = {
-  register: register,
+  register,
+  restart,
 }
 
 export default mcore
