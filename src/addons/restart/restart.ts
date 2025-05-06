@@ -27,12 +27,15 @@ export async function restart(
       const status = await plugin.restart()
       if (status === false) {
         // Выводим предупреждение, если плагин не смог перезапуститься
-        onMessage.call(plugin, {
-          type: "warning",
-          details: {
-            message: "reported that it was not possible to restart",
+        onMessage(
+          {
+            type: "warning",
+            details: {
+              message: "reported that it was not possible to restart",
+            },
           },
-        })
+          plugin,
+        )
       }
       if (typeof status === "boolean") {
         report[plugin.uid] = status
@@ -40,25 +43,31 @@ export async function restart(
     } catch (error) {
       report[plugin.uid] = false
       // Отправляем критическое сообщение, если произошла ошибка при перезапуске
-      onMessage.call(plugin, {
-        type: "critical",
-        details: {
-          message: "error on restart",
-          error,
+      onMessage(
+        {
+          type: "critical",
+          details: {
+            message: "error on restart",
+            error,
+          },
         },
-      })
+        plugin,
+      )
     } finally {
       if (report[plugin.uid] === undefined) {
         report[plugin.uid] = true
       }
 
       // Отправляем отладочное сообщение об успешном перезапуске
-      onMessage.call(plugin, {
-        type: "debug",
-        details: {
-          message: "successfully restarted",
+      onMessage(
+        {
+          type: "debug",
+          details: {
+            message: "successfully restarted",
+          },
         },
-      })
+        plugin,
+      )
     }
   }
 

@@ -8,9 +8,6 @@ import { onMessage } from "./events" // Функция для регистрац
 import store from "../../store" // Хранилище для управления состоянием приложения
 import type { Plugin } from "../../types" // Тип данных `Plugin`
 
-// Импорты функций для верификации и обработки событий
-import { checker } from "../../plugin" // Функция для верификации
-
 /**
  * Регистрация плагина
  *
@@ -29,10 +26,13 @@ export function register(plugins: Plugin[]) {
     // Проверка необходимых полей перед инициализацией плагина
     if (!plugin.uid || !plugin.version || !plugin.name || !plugin.init) {
       // Отправляем критическое сообщение о некорректном конфиге плагина
-      onMessage.bind(plugin)({
-        type: "critical",
-        details: "config (plugin.json) has errors and cannot be run",
-      })
+      onMessage(
+        {
+          type: "critical",
+          details: "config (plugin.json) has errors and cannot be run",
+        },
+        plugin,
+      )
     }
 
     // Флаг для отслеживания несовместимости версии
@@ -90,34 +90,40 @@ export function register(plugins: Plugin[]) {
 
     // Выводим предупреждение, если версия плагина несовместима с ядром
     if (errorVersion) {
-      onMessage.bind(plugin)({
-        type: "warning",
-        details: "the plugin version cannot work with the core version",
-      })
+      onMessage(
+        {
+          type: "warning",
+          details: "the plugin version cannot work with the core version",
+        },
+        plugin,
+      )
     }
 
     // Пытаемся инициализировать плагин
     try {
       // Вызываем метод `init` в контексте плагина, передавая функции `onMessage` и `verify`
-      plugin.init({
-        onMessage: onMessage.bind(plugin),
-        checker: checker,
-      })
+      plugin.init()
     } catch (error) {
       // Отправляем критическое сообщение, если произошла ошибка при инициализации
-      onMessage.bind(plugin)({
-        type: "critical",
-        details: {
-          message: "an error occurred during initialization",
-          error,
+      onMessage(
+        {
+          type: "critical",
+          details: {
+            message: "an error occurred during initialization",
+            error,
+          },
         },
-      })
+        plugin,
+      )
     } finally {
       // Отправляем отладочное сообщение об успешной инициализации
-      onMessage.bind(plugin)({
-        type: "debug",
-        details: "plugin initialization successful",
-      })
+      onMessage(
+        {
+          type: "debug",
+          details: "plugin initialization successful",
+        },
+        plugin,
+      )
     }
   }
 }

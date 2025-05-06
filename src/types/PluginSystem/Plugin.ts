@@ -36,11 +36,10 @@ export type PluginJson = {
 
 export interface Plugin extends PluginJson {
   // Метод инициализации плагина, вызываемый при его загрузке.
-  init(props: PluginProps): void
+  init(): void
   restart(): Promise<boolean | void> | boolean | void
 }
 
 export type PluginProps = {
-  onMessage(props: Message): void
-  checker: typeof checker
+  onMessage(options: Message, plugin: PluginJson): void
 }
