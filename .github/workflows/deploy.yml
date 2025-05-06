@@ -9,7 +9,7 @@ on:
       - main
 
 permissions:
-  id-token: write # Добавлено разрешение
+  id-token: write
 
 jobs:
   build-and-publish:
@@ -24,13 +24,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20" # Use the version of Node.js your project requires
+          node-version: "20"
           registry-url: "https://npm.pkg.github.com"
 
       # Configure npm for GitHub Packages
       - name: Configure npm for GitHub Packages
         run: |
-          echo "@minsize:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "@minsize:registry=https://npm.pkg.github.com/" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_TOKEN }}" >> .npmrc
           echo "always-auth=true" >> .npmrc
 
@@ -42,9 +42,22 @@ jobs:
       - name: Build
         run: yarn build
 
-      # Publish to npm
-      - name: Publish to npm
+      # Publish to GitHub Packages
+      - name: Publish to GitHub Packages
         working-directory: dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: npm publish --provenance --access public
+
+      # Switch registry to npmjs.org
+      - name: Configure npm for npmjs.org
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          echo "registry=https://registry.npmjs.org/" >> .npmrc
+
+      # Publish to npmjs.org
+      - name: Publish to npmjs.org
+        working-directory: dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
