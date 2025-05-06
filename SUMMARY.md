@@ -1,5 +1,5 @@
 # Table of contents
 
 * [Модуль Ядра](README.md)
-* [plugin](plugin/README.md)
-  * [Управление ядром плагинов](plugin/plugin.md)
+* [API](api/README.md)
+  * [Управление ядром плагинов](api/plugin.md)
