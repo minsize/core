@@ -9,7 +9,7 @@ on:
       - main
 
 permissions:
-  id-token: write # Требуется для работы с токенами аутентификации в процессе
+  contents: write
 
 jobs:
   build-and-publish:
