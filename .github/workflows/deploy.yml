@@ -25,26 +25,41 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20" # Use the version of Node.js your project requires
-          registry-url: "https://npm.pkg.github.com"
-
-      # Configure npm for GitHub Packages
-      - name: Configure npm for GitHub Packages
-        run: |
-          echo "@minsize:registry=https://npm.pkg.github.com/" >> .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_TOKEN }}" >> .npmrc
-          echo "always-auth=true" >> .npmrc
+          registry-url: "https://registry.npmjs.org"
 
       # Install dependencies
       - name: Install Dependencies
         run: yarn
 
+      - name: Check the version
+        id: check
+        run: |
+          CURRENT_VERSION=$(jq -r .version package.json)
+          echo "Current version: $CURRENT_VERSION"
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $LATEST_TAG"
+
+          LATEST_VERSION=${LATEST_TAG#v}
+
+          if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; 
+          then
+            echo "Version changed"
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Version not changed"
+            echo "version_changed=false" >> $GITHUB_OUTPUT
+          fi
+
       # Build package
       - name: Build
         run: yarn build
+        if: steps.check.outputs.version_changed == 'true'
 
       # Publish to npm
       - name: Publish to npm
+        if: steps.check.outputs.version_changed == 'true'
         working-directory: dist
+        run: npm publish --access public --no-git-checks
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GIT_TOKEN }}
-        run: npm publish --provenance --access public
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
