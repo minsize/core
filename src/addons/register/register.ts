@@ -2,13 +2,14 @@
 import { parseVersionString } from "@minsize/utils" // Для разбора строковых версий
 import { version } from "../../../package.json" // Текущая версия приложения из `package.json`
 
+import { onMessage } from "./events" // Функция для регистрации и обработки сообщений
+
 // Импорты для управления состоянием и типизации
 import store from "../../store" // Хранилище для управления состоянием приложения
 import type { Plugin } from "../../types" // Тип данных `Plugin`
 
 // Импорты функций для верификации и обработки событий
-import { checker } from "../checker/checker" // Функция для верификации
-import { onMessage } from "./events" // Функция для регистрации и обработки сообщений
+import { checker } from "../../plugin" // Функция для верификации
 
 /**
  * Регистрация плагина
@@ -45,14 +46,20 @@ export function register(plugins: Plugin[]) {
       ) // Разбор минимальной совместимой версии плагина
 
       // Сравнение основной, подверсии и версии патча
-      if (projectVersion.major < compatibleVersions.major) {
-        errorVersion = true
+      if (compatibleVersions.major !== "*" && projectVersion.major !== "*") {
+        if (projectVersion.major < compatibleVersions.major) {
+          errorVersion = true
+        }
       }
-      if (!errorVersion && projectVersion.minor < compatibleVersions.minor) {
-        errorVersion = true
+      if (compatibleVersions.minor !== "*" && projectVersion.minor !== "*") {
+        if (!errorVersion && projectVersion.minor < compatibleVersions.minor) {
+          errorVersion = true
+        }
       }
-      if (!errorVersion && projectVersion.patch < compatibleVersions.patch) {
-        errorVersion = true
+      if (compatibleVersions.patch !== "*" && projectVersion.patch !== "*") {
+        if (!errorVersion && projectVersion.patch < compatibleVersions.patch) {
+          errorVersion = true
+        }
       }
     }
 
@@ -64,14 +71,20 @@ export function register(plugins: Plugin[]) {
       ) // Разбор максимальной совместимой версии плагина
 
       // Сравнение основной, подверсии и версии патча
-      if (projectVersion.major > compatibleVersions.major) {
-        errorVersion = true
+      if (compatibleVersions.major !== "*" && projectVersion.major !== "*") {
+        if (projectVersion.major > compatibleVersions.major) {
+          errorVersion = true
+        }
       }
-      if (!errorVersion && projectVersion.minor > compatibleVersions.minor) {
-        errorVersion = true
+      if (compatibleVersions.minor !== "*" && projectVersion.minor !== "*") {
+        if (!errorVersion && projectVersion.minor > compatibleVersions.minor) {
+          errorVersion = true
+        }
       }
-      if (!errorVersion && projectVersion.patch > compatibleVersions.patch) {
-        errorVersion = true
+      if (compatibleVersions.patch !== "*" && projectVersion.patch !== "*") {
+        if (!errorVersion && projectVersion.patch > compatibleVersions.patch) {
+          errorVersion = true
+        }
       }
     }
 

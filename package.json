@@ -1,6 +1,6 @@
 {
   "name": "@minsize/core",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Core Module: The foundation for managing your application's modules and functionality.",
   "license": "MIT",
   "types": "index.ts",
@@ -16,7 +16,7 @@
     "build": "rollup --config config/rollup.config.ts --configPlugin @rollup/plugin-typescript"
   },
   "dependencies": {
-    "@minsize/utils": "^0.0.19"
+    "@minsize/utils": "^0.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.1.0",

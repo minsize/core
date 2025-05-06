@@ -1,4 +1,4 @@
-import { checker } from "../../addons"
+import { checker } from "../../plugin"
 import { Message } from "../../types"
 
 export type PluginJson = {

@@ -181,10 +181,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@minsize/utils@^0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@minsize/utils/-/utils-0.0.19.tgz#04cfb7c130ee24f0001195def44586a24bd5e6f0"
-  integrity sha512-PefZDJsMcE5Or1iH7EsvOrfBxyTpxPKx0WOZF4PJluyqWY4oluqY8LhZZoJA7ySd12tILWNoUZPtK9JcmnM4yQ==
+"@minsize/utils@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@minsize/utils/-/utils-0.1.0.tgz#feb19577436930b8391d4e3564a7a659f09b31c0"
+  integrity sha512-Lg5LKa6Ozx1UD1HVYtpS7EIVPcUqDZNuHYL1cm7cHrVOB/K1ZsiZenxn2dHO0li+yrwSLasdRhRqQutE6T2V0Q==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
