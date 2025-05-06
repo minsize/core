@@ -7,4 +7,6 @@ const mcore = {
 
 export default mcore
 
+export { checker } from "./plugin"
+
 export type * from "./types"
