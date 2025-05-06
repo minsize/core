@@ -12,9 +12,6 @@
     "type": "git",
     "url": "git+https://github.com/minsize/core.git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "scripts": {
     "build": "rollup --config config/rollup.config.ts --configPlugin @rollup/plugin-typescript"
   },
