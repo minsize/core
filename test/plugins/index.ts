@@ -4,7 +4,7 @@ import plugin from "./plugin.json"
 
 function init(props: PluginProps) {
   function lang(text: string) {
-    if (props.verify(lang, plugin.uid)) return ""
+    if (props.checker.verify(lang, plugin.uid)) return ""
 
     return `${text} [modifier]`
   }

@@ -1,9 +1,14 @@
-import { parseVersionString } from "@minsize/utils" // Импорт функции для разбора строковых версий
-import store from "../../store" // Импорт хранилища для управления состоянием приложения
-import type { Plugin } from "../../types" // Импорт типа данных `Plugin`
-import verify from "../checker/verify/verify" // Импорт функции для верификации
-import { onMessage } from "./events" // Импорт функции для регистрации и обработки сообщений
-import { version } from "../../package.json" // Импорт текущей версии приложения из `package.json`
+// Импорты утилит и функций для работы с версиями
+import { parseVersionString } from "@minsize/utils" // Для разбора строковых версий
+import { version } from "../../package.json" // Текущая версия приложения из `package.json`
+
+// Импорты для управления состоянием и типизации
+import store from "../../store" // Хранилище для управления состоянием приложения
+import type { Plugin } from "../../types" // Тип данных `Plugin`
+
+// Импорты функций для верификации и обработки событий
+import checker from "../checker/checker" // Функция для верификации
+import { onMessage } from "./events" // Функция для регистрации и обработки сообщений
 
 /**
  * Регистрация плагина
@@ -83,7 +88,7 @@ export function register(plugins: Plugin[]) {
       // Вызываем метод `init` в контексте плагина, передавая функции `onMessage` и `verify`
       plugin.init({
         onMessage: onMessage.bind(plugin),
-        verify,
+        checker: checker,
       })
     } catch (error) {
       // Отправляем критическое сообщение, если произошла ошибка при инициализации

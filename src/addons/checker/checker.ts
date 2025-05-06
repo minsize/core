@@ -1,5 +1,7 @@
-import verify from './verify/verify'
+import verify from "./verify/verify"
 
-export const checker = {
-	verify,
+const checker = {
+  verify,
 }
+
+export default checker
