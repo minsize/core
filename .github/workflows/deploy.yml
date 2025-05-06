@@ -9,72 +9,58 @@ on:
       - main
 
 permissions:
-  id-token: write # Добавлено разрешение
+  id-token: write # Требуется для работы с токенами аутентификации в процессе
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
+      # Клонируем репозиторий для получения кода
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Setup Node.js
+      # Устанавливаем Node.js нужной версии и указываем реестр npm
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20" # Use the version of Node.js your project requires
-          registry-url: "https://registry.npmjs.org"
+          node-version: "22" # Версия Node.js, необходимая для вашего проекта
+          registry-url: "https://registry.npmjs.org" # Указываем реестр пакетов npm
 
-      # Install dependencies
+      # Установка всех зависимостей проекта для последующей сборки
       - name: Install Dependencies
         run: yarn
 
+      # Проверяем, изменилась ли версия пакета
       - name: Check the version
         id: check
         run: |
-          CURRENT_VERSION=$(jq -r .version package.json)
+          CURRENT_VERSION=$(jq -r .version package.json) # Извлекаем текущую версию из package.json
           echo "Current version: $CURRENT_VERSION"
-          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0") # Сравниваем с последней меткой
           echo "Latest tag: $LATEST_TAG"
 
-          LATEST_VERSION=${LATEST_TAG#v}
+          LATEST_VERSION=${LATEST_TAG#v} # Удаляем 'v' в начале, чтобы получить номер версии
 
           if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; 
           then
             echo "Version changed"
-            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "version_changed=true" >> $GITHUB_OUTPUT # Если версия изменилась
             echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
           else
             echo "Version not changed"
-            echo "version_changed=false" >> $GITHUB_OUTPUT
+            echo "version_changed=false" >> $GITHUB_OUTPUT # Если версия не изменилась
           fi
 
-      # Build package
+      # Сборка пакета выполняется только если версия изменилась
       - name: Build
         run: yarn build
         if: steps.check.outputs.version_changed == 'true'
 
-      # Publish to npm
+      # Публикация пакета в npm, если версия обновлена
       - name: Publish to npm
         if: steps.check.outputs.version_changed == 'true'
         working-directory: dist
         run: npm publish --access public --no-git-checks
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # Configure npm for GitHub Packages
-      - name: Configure npm for GitHub Packages
-        run: |
-          echo "@minsize:registry=https://npm.pkg.github.com/" >> .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_TOKEN }}" >> .npmrc
-          echo "always-auth=true" >> .npmrc
-
-      # Publish to github
-      - name: Publish to github
-        if: steps.check.outputs.version_changed == 'true'
-        working-directory: dist
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GIT_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Используем токен для аутентификации
