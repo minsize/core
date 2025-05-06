@@ -9,7 +9,7 @@ on:
       - main
 
 permissions:
-  id-token: write
+  id-token: write # Добавлено разрешение
 
 jobs:
   build-and-publish:
@@ -24,14 +24,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
+          node-version: "20" # Use the version of Node.js your project requires
+          registry-url: "https://npm.pkg.github.com"
 
-      # Switch registry to npmjs.org
-      - name: Configure npm for npmjs.org
+      # Configure npm for GitHub Packages
+      - name: Configure npm for GitHub Packages
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-          echo "registry=https://registry.npmjs.org/" >> .npmrc
+          echo "@minsize:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_TOKEN }}" >> .npmrc
+          echo "always-auth=true" >> .npmrc
 
       # Install dependencies
       - name: Install Dependencies
@@ -41,9 +42,9 @@ jobs:
       - name: Build
         run: yarn build
 
-      # Publish to npmjs.org
-      - name: Publish to npmjs.org
+      # Publish to npm
+      - name: Publish to npm
         working-directory: dist
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+          NODE_AUTH_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: npm publish --provenance --access public
