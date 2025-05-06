@@ -40,6 +40,4 @@ export interface Plugin extends PluginJson {
   restart(): Promise<boolean | void> | boolean | void
 }
 
-export type PluginProps = {
-  onMessage(options: Message, plugin: PluginJson): void
-}
+export type PluginProps = {}

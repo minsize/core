@@ -17,9 +17,6 @@ import { log } from "../../plugin"
  * @param plugins - Массив плагинов, которые необходимо зарегистрировать и инициализировать.
  */
 export function register(plugins: Plugin[]) {
-  // Добавляем все переданные плагины в существующий массив плагинов.
-  store.plugins.push(...plugins)
-
   // Инициализируем каждый из переданных плагинов после добавления
   for (const plugin of plugins) {
     // Проверка необходимых полей перед инициализацией плагина
@@ -123,6 +120,9 @@ export function register(plugins: Plugin[]) {
         },
         plugin,
       )
+
+      // Добавляем плагин в существующий массив плагинов.
+      store.plugins.push(plugin)
     }
   }
 }
