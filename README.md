@@ -52,7 +52,7 @@ import mcore from '@minsize/core';
 mcore.register([Plugin()])
 ```
 
-## Справочник API 
+## Справочник API
 
 ### Core
 
